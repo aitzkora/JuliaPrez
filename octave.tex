@@ -1,0 +1,75 @@
+\documentclass[11pt,mathserif]{beamer}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\newcommand{\tiret}{\rule[0.6ex]{1.3ex}{0.22ex}}
+
+% !! pour le francais
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{relsize}
+\usepackage{color}
+\usepackage{fancyvrb}
+\usepackage{emerald}
+\usepackage{punk}
+
+
+
+%%%%% for smiley
+\def\mysmile#1{{\ooalign{\hfil\lower.06ex % a smiley face
+ \hbox{$\scriptscriptstyle#1$}\hfil\crcr
+ \hfil\lower.7ex\hbox{\"{}}\hfil\crcr
+ \mathhexbox20D}}}
+
+
+\newcommand{\bad}{\bf \textcolor{red}{\mysmile \frown}}
+\newcommand{\neutral}{\bf \textcolor{blue}{\mysmile \minus}}
+\newcommand{\good}{\bf \textcolor{green}{\mysmile \smile}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\include{julia_def}
+\lstset{ %
+  language=julia
+}
+
+%% ====== my beamer ==
+\mode<presentation> {
+\usetheme{default}    % sobre
+\useinnertheme[shadow]{rounded}  % les numeros
+}
+\usefonttheme{structurebold}
+
+\begin{document}
+
+%****************************************************************
+% Page de presentation 
+%**************************************************************
+\begin{frame}
+\begin{center}
+{\Large Introduction to the Julia language }
+\end{center}
+\vspace{1cm}
+\includegraphics[width=0.5\linewidth]{figures/julia.png}
+\vspace{1cm}
+\begin{center}
+{\large Marc Fuentes - SED Bordeaux \\}
+\end{center}
+\end{frame}
+
+%****************************************************************
+% Introduction 
+%**************************************************************
+
+\begin{frame}[fragile]
+\frametitle{Outline}
+\begin{enumerate}[<+->]
+\item \julia as a numerical language 
+\item some caracteristic about the language
+\item examples 
+\item performance
+\end{enumerate}
+\end{frame}
+\end{document}
