@@ -24,14 +24,11 @@
 \newcommand{\scilab}{\textbf{Scilab}{} }
 \newcommand{\python}{\textbf{Python}{} }
 
-
-
 %%%%% for smiley
 \def\mysmile#1{{\ooalign{\hfil\lower.06ex % a smiley face
  \hbox{$\scriptscriptstyle#1$}\hfil\crcr
  \hfil\lower.7ex\hbox{\"{}}\hfil\crcr
  \mathhexbox20D}}}
-
 
 \newcommand{\bad}{\bf \textcolor{red}{\mysmile \frown}}
 \newcommand{\neutral}{\bf \textcolor{blue}{\mysmile \minus}}
@@ -59,8 +56,8 @@
 
 %% ====== my beamer ==
 \mode<presentation> {
-\usetheme{default}    % sobre
-\useinnertheme[shadow]{rounded}  % les numeros
+  \usetheme{default}    % sobre
+  \useinnertheme[shadow]{rounded}  % les numeros
 }
 \usefonttheme{structurebold}
 
@@ -68,19 +65,19 @@
 
 %****************************************************************
 % Page de presentation 
-%**************************************************************
+%****************************************************************
 \begin{frame}
-\begin{center}
-{\Large Introduction to the \julia language }
-\end{center}
-\vspace{1cm}
-\begin{center}
-\includegraphics[width=0.4\linewidth]{figures/julia.png}
-\end{center}
-\vspace{1cm}
-\begin{center}
-{\large Marc Fuentes - SED Bordeaux \\}
-\end{center}
+  \begin{center}
+    {\Large Introduction to the \julia language }
+  \end{center}
+  \vspace{1cm}
+  \begin{center}
+    \includegraphics[width=0.4\linewidth]{figures/julia.png}
+  \end{center}
+  \vspace{1cm}
+  \begin{center}
+    {\large Marc Fuentes - SED Bordeaux \\}
+  \end{center}
 \end{frame}
 
 %****************************************************************
@@ -88,13 +85,13 @@
 %**************************************************************
 
 \begin{frame}
-\frametitle{Outline}
-\begin{enumerate}[<+->]
-\item motivations
-\item \julia as a numerical language 
-\item types and methods 
-\item about performance
-\end{enumerate}
+  \frametitle{Outline}
+  \begin{enumerate}[<+->]
+    \item motivations
+    \item \julia as a numerical language 
+    \item types and methods 
+    \item about performance
+  \end{enumerate}
 \end{frame}
 
 
@@ -103,20 +100,20 @@
 %**************************************************************
 
 \begin{frame}
-\frametitle{Why yet another \matlab-like language?}
-\begin{itemize}[<+->]
-\item {\em scripting languages} such as \matlab, \scipy, \octave etc... are
-efficient to prototype algorithms (more than C++/Fortran)
-\item \matlab is not free neither open source. It still remains the {\em lingua franca}
-in numerical algorithms. 
-\item \octave is very slow (but highly compatible with \matlab)
-\item \python along \numpy and \scipy is a beautiful language, but a little bit slow and do not
-support any parallelism as a built-in feature. 
-\item \textbf{Pypy} which is a nice JIT compiler of \python, but does not support neither \numpy neither \scipy
-\item \textbf{R} is well suited for statistics, but suffer from old-syntax troubles
-\end{itemize}
-\pause
-\fleche Why do not try a new language for numerical computation?
+  \frametitle{Why yet another \matlab-like language?}
+  \begin{itemize}[<+->]
+    \item {\em scripting languages} such as \matlab, \scipy, \octave etc... are
+    efficient to prototype algorithms (more than C++/Fortran)
+    \item \matlab is not free neither open source. It still remains the {\em lingua franca}
+    in numerical algorithms. 
+    \item \octave is very slow (but highly compatible with \matlab)
+    \item \python along \numpy and \scipy is a beautiful language, but a little bit slow and do not
+    support any parallelism as a built-in feature. 
+    \item \textbf{Pypy} which is a nice JIT compiler of \python, but does not support neither \numpy neither \scipy
+    \item \textbf{R} is well suited for statistics, but suffer from old-syntax troubles
+  \end{itemize}
+  \pause
+  \fleche Why do not try a new language for numerical computation?
 \end{frame}
 
 
@@ -125,191 +122,193 @@ support any parallelism as a built-in feature.
 %**************************************************************
 
 \begin{frame}[fragile]
-\frametitle{A language for numerical computation}
-\begin{itemize}[<+->]
- \item \julia's syntax is very similar to langages as \matlab, \python or \scilab, so
-  switching to \julia is fast
- \item do not require {\em vectorized} code to run fast(JIT compiler)
- \item it uses references (also for function arguments)
- \item indices start to 1 and finish to \texttt{end}
- \item use brackets \texttt{[,]} for indexing
- \item it supports broadcasting
- \item support 1D arrays
-\end{itemize}
-\pause
-\fleche let us have a look to some examples
+  \frametitle{A language for numerical computation}
+  \begin{itemize}[<+->]
+    \item \julia's syntax is very similar to langages as \matlab, \python or \scilab, so
+    switching to \julia is fast
+    \item do not require {\em vectorized} code to run fast(JIT compiler)
+    \item it uses references (also for function arguments)
+    \item indices start to 1 and finish to \texttt{end}
+    \item use brackets \texttt{[,]} for indexing
+    \item it supports broadcasting
+    \item support 1D arrays
+  \end{itemize}
+  \pause
+  \fleche let us have a look to some examples
 \end{frame}
 
 %****************************************************************
 % Functional aspects
-%**************************************************************
+%****************************************************************
 
 \begin{frame}[fragile]
-\frametitle{Functional aspects}
-\begin{itemize}[<+->]
-   \item support anonymous functions : \texttt{ (x -> x*x)(2) }
-   \item support \texttt{map}, \texttt{reduce}, \texttt{filter} functions
-   \item functions support variadic arguments (using tuples)
-   \item comprehension lists
-   \item functions are not supposed to modify their arguments, otherwise
-   they follow the \texttt{!} convention like \texttt{sort!}
-\end{itemize}
+  \frametitle{Functional aspects}
+  \begin{itemize}[<+->]
+    \item support anonymous functions : \texttt{ (x -> x*x)(2) }
+    \item support \texttt{map}, \texttt{reduce}, \texttt{filter} functions
+    \item functions support variadic arguments (using tuples)
+    \item comprehension lists
+    \item functions are not supposed to modify their arguments, otherwise
+    they follow the \texttt{!} convention like \texttt{sort!}
+  \end{itemize}
 \end{frame}
 
 %****************************************************************
 % Parallelism
-%**************************************************************
+%****************************************************************
 \begin{frame}[fragile]
-\frametitle{Parallelism}
-\pause
-\begin{itemize}[<+->]
-   \item \julia has a built-in support for a distributed memory parallelism
-   \item one-sided message passing routines 
-       \begin{itemize}
-            \item \texttt{remotecall} to launch a computation on a given process 
-            \item \texttt{fetch} to retrieve informations 
-       \end{itemize}     
+  \frametitle{Parallelism}
+  \pause
+  \begin{itemize}[<+->]
+    \item \julia has a built-in support for a distributed memory parallelism
+    \item one-sided message passing routines 
+    \begin{itemize}
+      \item \texttt{remotecall} to launch a computation on a given process 
+      \item \texttt{fetch} to retrieve informations 
+    \end{itemize}     
 
-   \item  high level routines
-       \begin{itemize}
-            \item \texttt{@parallel} reduction for lightweight iterations
-            \item \texttt{pmap} for heavy iterations
-       \end{itemize}     
-   \item support for distributed arrays in the standard library 
-\end{itemize}
+    \item  high level routines
+    \begin{itemize}
+      \item \texttt{@parallel} reduction for lightweight iterations
+      \item \texttt{pmap} for heavy iterations
+    \end{itemize}     
+    \item support for distributed arrays in the standard library 
+  \end{itemize}
 \end{frame}
 
 %****************************************************************
 % external libraries calls
-%**********²****************************************************
+%****************************************************************
 \begin{frame}[fragile]
-\frametitle{external libraries calls}
-\pause
-\begin{itemize}[<+->]
+  \frametitle{external libraries calls}
+  \pause
+  \begin{itemize}[<+->]
     \item sometimes you need to call a C/Fortran code
     \item "no boilerplate" philosophy : do not require { Mexfiles}, Swig or other wrapping system
     \item the code must be in a {\bf shared} library 
     \item the syntax is the following  
-\end{itemize}
-\pause
-\begin{lstlisting}
-ccall(:function, "lib"), return_type, (type_1,...,type_n), args)
-\end{lstlisting}
+  \end{itemize}
+  \pause
+  \begin{lstlisting}
+    ccall(:function, "lib"), return_type, (type_1,...,type_n), args)
+  \end{lstlisting}
 \end{frame}
 
 %****************************************************************
 % Types  
-%**********²****************************************************
+%**********²*****************************************************
 
 \begin{frame}[fragile]
-\frametitle{Types}
-\pause
-\begin{itemize}[<+->]
+  \frametitle{Types}
+  \pause
+  \begin{itemize}[<+->]
     \item There is a graph type in Julia reflecting the hierarchy of types
-\begin{lstlisting}
-  None <: Int64 <: Number <: Real <: Any
-\end{lstlisting}
-    \item support both abstract and concrete types
-    \item user can annotate the code with operator \texttt{::} "is an instance of"
-    \item \julia supports 
+    \begin{lstlisting}
+      None <: Int64 <: Number <: Real <: Any
+    \end{lstlisting}
+      \item support both abstract and concrete types
+      \item user can annotate the code with operator \texttt{::} "is an instance of"
+      \item \julia supports 
     \begin{itemize}
-        \item composite types 
-        \item union types  
-        \item tuple types  
-        \item parametric types  
-        \item singleton types
-        \item type aliases
-    \end{itemize}  
-\end{itemize}
+      \item composite types
+      \item union types  
+      \item tuple types  
+      \item parametric types
+      \item singleton types
+      \item type aliases
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 %****************************************************************
 % Multiple dispatch 
-%**********²****************************************************
+%**********²*****************************************************
 
 \begin{frame}[fragile]
-\frametitle{Multiple dispatch}
-\begin{itemize}
-   \pause
-   \item main idea : define piecewisely methods or functions depending on their arguments types
-   \pause
-   \item let us define \texttt{f}
-   \begin{lstlisting}
-   f(x::Float64,y::Float64) = 2x + y
-   f(x::Int,y::Int) = 2x + y
-   f(2.,3.) # returns 7.0
-   f(2,3) # returns 7.0
-   f(2, 3.) # throw an ERROR: no method f(Int64,Float64)
-   \end{lstlisting}
-   \pause
-   but if we define \texttt{g}
-   \begin{lstlisting}
-   g(x::Number, y::Number) = 2x + y
-   g(2.0, 3) # now returns 7.0
-   \end{lstlisting}
-   \pause
-   \item no automatic or magic conversions : for operators 
+  \frametitle{Multiple dispatch}
+  \begin{itemize}
+    \pause
+    \item main idea : define piecewisely methods or functions depending on their arguments types
+    \pause
+    \item let us define \texttt{f}
+    \begin{lstlisting}
+      f(x::Float64,y::Float64) = 2x + y
+      f(x::Int,y::Int) = 2x + y
+      f(2.,3.) # returns 7.0
+      f(2,3) # returns 7.0
+      f(2, 3.) # throw an ERROR: no method f(Int64,Float64)
+    \end{lstlisting}
+    \pause
+    but if we define \texttt{g}
+    \begin{lstlisting}
+      g(x::Number, y::Number) = 2x + y
+      g(2.0, 3) # now returns 7.0
+    \end{lstlisting}
+    \pause
+    \item no automatic or magic conversions : for operators 
     arguments are promoted to a common type (user-definable) and
     use the specific implementation
-   \pause
-   \item supports parametric methods
-   \begin{lstlisting}
-   myappend{T}(v::Vector{T}, x::T) = [v..., x] 
-   \end{lstlisting}
-\end{itemize}
+    \pause
+    \item supports parametric methods
+    \begin{lstlisting}
+      myappend{T}(v::Vector{T}, x::T) = [v..., x] 
+    \end{lstlisting}
+  \end{itemize}
 \end{frame}
 
 %****************************************************************
 % Performance 
-%**********²****************************************************
+%**********²*****************************************************
 
 \begin{frame}[fragile]
-\frametitle{Performance}
-\begin{itemize}[<+->]
-  \item to prove that \julia is fast language, we did some tests
-  \item benchmarks sources taken from the Julia site and modified
-  \item all times are in milliseconds
-  \item on a Z800 (8 threads, 24G of memory), 
-\end{itemize}
-\pause
-\begin{figure}[H]
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline
-appli & fib & mandel & quicksort & pisum & randstat & randmul \\
-\hline
-\matlab & 191 & 22 & 28 & 57 & 97 & 69 \\
-Octave & 924 & 310 & 1138 & 21159 & 484 & 109 \\
-Python &  4  & 7  & 14 & 1107 & 253 & 101 \\
-Pypy   & 8  &  3(faux) & 13 & 44 & xxx &xxx \\ 
-Julia  & 0.09 & 0.28 & 0.57 & 45 & 34 & 49 \\
-Fortran & 0.08 & $\leqslant 10^{-6}$ & 0.62 & 44 & 16 & 275(16) \\
-\hline
-\end{tabular}
-\end{figure}
+  \frametitle{Performance}
+  \begin{itemize}[<+->]
+    \item to prove that \julia is fast language, we did some tests
+    \item benchmarks sources taken from the Julia site and modified
+    \item all times are in milliseconds
+    \item on a Z800 (8 threads, 24G of memory), 
+  \end{itemize}
+  \pause
+  \begin{figure}[H]
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+      \hline
+      appli & fib & mandel & quicksort & pisum & randstat & randmul \\
+      \hline
+      \matlab & 191 & 22 & 28 & 57 & 97 & 69 \\
+      Octave & 924 & 310 & 1138 & 21159 & 484 & 109 \\
+      Python &  4  & 7  & 14 & 1107 & 253 & 101 \\
+      Pypy   & 8  &  3(faux) & 13 & 44 & xxx &xxx \\ 
+      Julia  & 0.09 & 0.28 & 0.57 & 45 & 34 & 49 \\
+      Fortran & 0.08 & $\leqslant 10^{-6}$ & 0.62 & 44 & 16 & 275(16) \\
+      \hline
+    \end{tabular}
+  \end{figure}
 \end{frame}
+
 %**************************************************************
 %  Conclusion     
 %**************************************************************
 \begin{frame}[fragile]{Conclusion}
-\begin{itemize}[<+->] 
- \item pros : 
-   \begin{itemize}
-        \item  a true language, with lots of powerful features,  
-        \item \julia is fast! 
-   \end{itemize}
- \item cons : 
-   \begin{itemize}
-    \item poor graphics support (only 2D with additional package),
-    \item no support for shared-memory parallelism 
-    \item small community 
-   \end{itemize}
- \item some non presented points : 
-     \begin{itemize}
+  \begin{itemize}[<+->] 
+    \item pros : 
+    \begin{itemize}
+      \item  a true language, with lots of powerful features,  
+      \item \julia is fast! 
+    \end{itemize}
+    \item cons : 
+    \begin{itemize}
+      \item poor graphics support (only 2D with additional package),
+      \item no support for shared-memory parallelism 
+      \item small community 
+    \end{itemize}
+    \item some non presented points : 
+    \begin{itemize}
       \item meta-programming aspects : macros 
       \item reflection 
       \item packaging system based on Git
-     \end{itemize} 
- \item more info at \texttt{http://julialang.org/}
-\end{itemize} 
+    \end{itemize} 
+    \item more info at \texttt{http://julialang.org/}
+  \end{itemize} 
 \end{frame}
+
 \end{document}
