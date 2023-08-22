@@ -1,22 +1,24 @@
-#Purge implicites rules 
+# purge implicites rules 
 .SUFFIXES:
 .SUFFIXES: .pdf .tex
 
-# Tools 
-TEX = pdflatex 
-BIBMAKE = bibtex
-# name of Pdf File 
+all: latex marp
 
+marp : julia-marp.md
+	marp $<
+	CHROME_PATH=/snap/chromium/current/usr/lib/chromium-browser/chrome marp --allow-local-files --pdf $<
 
-julia.pdf : julia.tex 
-	$(TEX) $<	
-# Clean the directory
+latex : julia.tex 
+	latexmk -output-directory=tmp -pdf $<
+	mv tmp/julia.pdf julia.pdf
+
+# clean the directory
 clean::clean_pdf clean_aux
-
 
 clean_pdf: 
 	@echo Cleaning pdf File... 
 	@rm -f julia.pdf
+
 clean_aux:
 	@echo Cleaning Auxiliary files... 
 	@rm -f core *.nav *.vrb *.loa *.bbl julia.out  
