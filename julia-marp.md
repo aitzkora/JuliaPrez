@@ -2,10 +2,10 @@
 theme: default
 style: |
   section {
-    font-size: 25px;
+    font-size: 20px;
   }
   pre {
-   font-size: 20px;
+   font-size: 15px;
   }
 auto-scaling: true
 paginate: true
@@ -64,9 +64,131 @@ Why do not try a new language for numerical computation ?
 
 # Parallelism
 
-- Julia has a built-in support for distributed (`Distributed`) and shared memory (`Threads`) parallelism
-- `MPI.jl` for which wraps `MPI` libraries for differents `ABI`s for classical two-sided communication
-- `CUDA.jl` for GPU computations
+## Builtin - CPU
+
+Built-in support for distributed (`Distributed`) and shared memory (`Threads`) parallelism:
+```julia
+using BenchmarkTools, Test
+
+function add_seq!(y, x)
+    for i ∈ eachindex(y, x)
+        @inbounds y[i] += x[i]
+    end
+end
+
+function add_threads_cpu!(y, x)  # JULIA_NUM_THREADS=4 or julia --threads=4
+    Threads.@threads for i ∈ eachindex(y, x)
+      @inbounds y[i] += x[i]
+    end
+end
+
+function main(N = 2^20)
+  x = fill(1.0f0, N)  # a vector filled with 1.0 (Float32)
+  y = zeros(Float32, N)  # a vector filled with 0.0
+
+  fill!(y, 2); add_seq!(y, x); @test all(==(3), y)
+  @btime add_seq!($y, $x)
+  # 158.857 μs (0 allocations: 0 bytes)
+
+  fill!(y, 2); add_threads_cpu!(y, x); @test all(==(3), y)
+  @btime add_threads_cpu!($y, $x)
+  # 37.914 μs (24 allocations: 2.28 KiB)
+end
+
+main()
+```
+
+---
+
+## MPI - CPU
+
+[MPI.jl](https://juliaparallel.org/MPI.jl) wraps `MPI` libraries for differents `ABI`s for classical two-sided communication for SPMD models.
+
+```julia
+# mpiexec -np 4 julia ex.jl
+using MPI
+MPI.Init()
+
+function main(N = 4)
+  comm = MPI.COMM_WORLD
+  rank = MPI.Comm_rank(comm)
+  size = MPI.Comm_size(comm)
+
+  dst = mod(rank+1, size)
+  src = mod(rank-1, size)
+
+  send_mesg = Array{Float64}(undef, N)
+  recv_mesg = Array{Float64}(undef, N)
+
+  fill!(send_mesg, Float64(rank))
+
+  rreq = MPI.Irecv!(recv_mesg, comm; source=src, tag=src+32)
+
+  println("$rank: Sending   $rank -> $dst = $send_mesg")
+  sreq = MPI.Isend(send_mesg, comm; dest=dst, tag=rank+32)
+
+  MPI.Waitall([rreq, sreq])
+
+  println("$rank: Received $src -> $rank = $recv_mesg")
+
+  MPI.Barrier(comm)
+end
+
+main()
+```
+
+---
+
+## CUDA - GPU
+
+[CUDA.jl](https://cuda.juliagpu.org) for GPU computations.
+
+```julia
+using CUDA
+
+function add_seq_gpu!(y, x)
+  for i ∈ 1:length(y)
+    @inbounds y[i] += x[i]
+  end
+end
+
+function bench_seq_gpu!(y, x)
+  CUDA.@sync begin
+    @cuda add_seq_gpu!(y, x)
+  end
+end
+
+function add_threads_gpu!(y, x)
+    index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+    stride = gridDim().x * blockDim().x
+    for i = index:stride:length(y)
+      @inbounds y[i] += x[i]
+    end
+end
+
+function bench_threads_gpu!(y, x)
+  threads = 256
+  blocks = ceil(Int, length(y) / threads)
+  CUDA.@sync begin
+    @cuda threads=threads blocks=blocks add_threads_gpu!(y, x)
+  end
+end
+
+function main(N = 2^20)
+  x = CUDA.fill(1.0f0, N)  # a vector stored on the GPU filled with 1.0 (Float32)
+  y = CUDA.fill(2.0f0, N)  # a vector stored on the GPU filled with 2.0
+
+  fill!(y, 2); bench_seq_gpu!(y, x); @test all(==(3), Array(y))
+  @btime bench_seq_gpu!($y, $x)
+  # 61.511 ms (54 allocations: 3.33 KiB)
+
+  fill!(y, 2); bench_threads_gpu!(y, x); @test all(==(3), Array(y))
+  @btime bench_threads_gpu!($y, $x)
+  # 63.579 μs (8 allocations: 400 bytes)
+end
+
+main()
+```
 
 ---
 
