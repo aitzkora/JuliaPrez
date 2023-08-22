@@ -6,7 +6,7 @@ all: latex marp
 
 marp : julia-marp.md
 	marp $<
-	CHROME_PATH=/snap/chromium/current/usr/lib/chromium-browser/chrome marp --allow-local-files --pdf $<
+	marp --allow-local-files --pdf $<
 
 latex : julia.tex 
 	latexmk -output-directory=tmp -pdf $<
