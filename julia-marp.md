@@ -284,3 +284,9 @@ myappend(v::AbstractVector{T}, x::T) where {T <: Real} = [v..., x]
   - [official forum](https://discourse.julialang.org/)
   - [documentation](https://docs.julialang.org/en/v1/)
   - [FAQ](https://docs.julialang.org/en/v1/manual/faq/)
+
+---
+
+# Sources
+
+- code examples inspired from [CUDA docs](https://cuda.juliagpu.org/stable/tutorials/introduction)
